@@ -2,6 +2,31 @@
   "expo": {
     "name": "resolve-app",
     "slug": "resolve-app",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "android": {
+      "newArchEnabled": true
+    },
+    "ios": {
+      "newArchEnabled": true
+    },
+    "plugins": ["expo-video", "expo-font"],
+    "router": {
+      "origin": "expo"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fc1a3818-d9b6-457f-b88d-43bb99cd4d62"
+      }
+    },
+    "build": {
+      "development": {
+        "developmentClient": true,
+        "distribution": "internal"
+      },
+      "preview": {
+        "distribution": "internal"
+      },
+      "production": {}
+    }
   }
 }
