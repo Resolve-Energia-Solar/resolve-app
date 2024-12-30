@@ -2,19 +2,23 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "./avatar";
-import { useGlobalContext } from "../contexts/GlobalContext";
+import { FormatCPF } from "../utils/FormatedCPF";
 
-export default function PersonalInfo() {
-  const { contract } = useGlobalContext();
-  const name = contract.results[0].customer.complete_name;
+export default function PersonalInfo({ contract, logout }) {
+  const firstDocument = contract?.results[0]?.customer?.first_document;
+  const formattedCPF = FormatCPF(firstDocument);
+  const name = contract?.results[0]?.customer?.complete_name;
+  const email = contract?.results[0]?.customer?.email;
+  const phone = contract?.results[0]?.customer?.phone_numbers[0]?.phone_number;
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Dados pessoais</Text>
       <View style={styles.profileImageContainer}>
         <Avatar name={name} source={null} />
-        <View style={styles.cameraIcon}>
+        {/* <View style={styles.cameraIcon}>
           <Ionicons name="camera" size={15} color="black" />
-        </View>
+        </View> */}
       </View>
 
       <View style={styles.infoItem}>
@@ -24,24 +28,24 @@ export default function PersonalInfo() {
 
       <View style={styles.infoItem}>
         <Text style={styles.label}>CPF</Text>
-        <Text style={styles.value}>008.123.456-78</Text>
+        <Text style={styles.value}>{formattedCPF}</Text>
       </View>
 
       <View style={styles.infoItem}>
         <Text style={styles.label}>Telefone com DDD</Text>
-        <Text style={styles.value}>(91) 99999-9999</Text>
+        <Text style={styles.value}>{phone}</Text>
       </View>
 
       <View style={styles.infoItem}>
         <Text style={styles.label}>E-mail</Text>
-        <Text style={styles.value}>bruna.fernandes@gmail.com</Text>
+        <Text style={styles.value}>{email}</Text>
       </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.editButton}>
           <Text style={styles.editButtonText}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity onPress={logout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Sair do Aplicativo</Text>
         </TouchableOpacity>
       </View>

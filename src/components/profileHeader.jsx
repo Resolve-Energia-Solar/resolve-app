@@ -9,11 +9,14 @@ export default function ProfileHeader({ name }) {
   return (
     <View style={styles.header}>
       <View style={styles.profile}>
-        <Avatar name={name} source={null} />
-        <View>
-          <Text style={styles.greeting}>Olá,</Text>
-          <Text style={styles.name}>{displayName}</Text>
+        <View style={styles.avatar}>
+          <Avatar name={name} source={null} />
+          <View>
+            <Text style={styles.greeting}>Olá,</Text>
+            <Text style={styles.name}>{displayName}</Text>
+          </View>
         </View>
+
         <TouchableOpacity>
           <Ionicons name="menu" size={24} color="black" />
         </TouchableOpacity>
@@ -37,6 +40,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 30,
+  },
+  avatar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   greeting: {
     fontSize: 14,

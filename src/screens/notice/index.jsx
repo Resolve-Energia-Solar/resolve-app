@@ -3,15 +3,14 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { notifications } from "../../data/notification";
 import Header from "../../components/header";
-import NotificationCard from "../../components/notificationcard";
 import { FloatingButtons } from "../../components/floatingButtons";
 import { BottomNav } from "../../components/bottomNav";
+import NotificationCard from "../../components/notificationsCard";
 
 export default function NotificationsScreen() {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header title="Notificações" />
-
       <View style={styles.notificationHeader}>
         <Text style={styles.notificationTitle}>Painel de Avisos</Text>
         <Ionicons name="notifications-outline" size={24} color="black" />
@@ -30,7 +29,7 @@ export default function NotificationsScreen() {
 
       <FloatingButtons />
       <BottomNav />
-    </SafeAreaView>
+    </View>
   );
 }
 

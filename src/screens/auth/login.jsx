@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -9,7 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Input from "../../components/input";
 import Button from "../../components/button";
 import Background from "../../components/background";
@@ -18,12 +19,10 @@ import loginService from "../../services/authService";
 import contractService from "../../services/contractService";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { useNavigation } from "@react-navigation/native";
-
 import Checkbox from "expo-checkbox";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-
   const { setUserInfo, setContractData } = useGlobalContext();
 
   const [cpf, setCpf] = useState("");
@@ -32,6 +31,48 @@ export default function LoginScreen() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadSavedData = async () => {
+      try {
+        const savedCpf = await AsyncStorage.getItem("savedCpf");
+        const savedBirthDate = await AsyncStorage.getItem("savedBirthDate");
+        const rememberLogin = await AsyncStorage.getItem("saveLogin");
+
+        if (savedCpf && savedBirthDate && rememberLogin === "true") {
+          setCpf(savedCpf);
+          setBirthDate(savedBirthDate);
+          setSaveLogin(true);
+        }
+      } catch (error) {
+        console.log("Erro ao carregar dados do AsyncStorage:", error);
+      }
+    };
+
+    loadSavedData();
+  }, []);
+
+  const saveData = async () => {
+    if (saveLogin) {
+      try {
+        await AsyncStorage.setItem("savedCpf", cpf);
+        await AsyncStorage.setItem("savedBirthDate", birthDate);
+        await AsyncStorage.setItem("saveLogin", "true");
+        console.log("Dados salvos com sucesso.");
+      } catch (error) {
+        console.log("Erro ao salvar dados no AsyncStorage:", error);
+      }
+    } else {
+      try {
+        await AsyncStorage.removeItem("savedCpf");
+        await AsyncStorage.removeItem("savedBirthDate");
+        await AsyncStorage.removeItem("saveLogin");
+        console.log("Dados removidos com sucesso.");
+      } catch (error) {
+        console.log("Erro ao remover dados do AsyncStorage:", error);
+      }
+    }
+  };
 
   const handleAccess = async () => {
     dismissKeyboard();
@@ -55,7 +96,7 @@ export default function LoginScreen() {
 
       if (success) {
         if (saveLogin) {
-          console.log("Salvando os dados do login...");
+          await saveData();
         }
 
         console.log("Login bem-sucedido!", user);

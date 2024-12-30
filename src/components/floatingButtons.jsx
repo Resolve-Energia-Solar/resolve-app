@@ -1,14 +1,52 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import React from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+  Alert,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 export const FloatingButtons = () => {
+  const openWhatsApp = async () => {
+    const phoneNumber = "559140048688";
+    const whatsappAppUrl = `whatsapp://send?phone=${phoneNumber}`;
+    const whatsappWebUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`;
+
+    try {
+      // Verifica se o esquema do aplicativo WhatsApp é suportado
+      const appSupported = await Linking.canOpenURL(whatsappAppUrl);
+      if (appSupported) {
+        await Linking.openURL(whatsappAppUrl);
+      } else {
+        // Verifica se o esquema da Web do WhatsApp é suportado
+        const webSupported = await Linking.canOpenURL(whatsappWebUrl);
+        if (webSupported) {
+          await Linking.openURL(whatsappWebUrl);
+        } else {
+          throw new Error("WhatsApp não está disponível.");
+        }
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      Alert.alert(
+        "Erro",
+        "Não foi possível abrir o WhatsApp. Verifique se ele está instalado ou tente novamente mais tarde."
+      );
+    }
+  };
+  const openPhone = () => {
+    const phoneNumber = "tel:40048688";
+    Linking.openURL(phoneNumber).catch((err) => console.error("Error:", err));
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={openWhatsApp} style={styles.button}>
         <Feather name="message-circle" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={openPhone} style={styles.button}>
         <Feather name="phone" size={24} color="white" />
       </TouchableOpacity>
     </View>
@@ -17,19 +55,19 @@ export const FloatingButtons = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    flexDirection: 'row',
+    position: "absolute",
+    flexDirection: "row",
     bottom: 90,
     right: 24,
-    gap: 8
+    gap: 8,
   },
   button: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 8,
   },
 });

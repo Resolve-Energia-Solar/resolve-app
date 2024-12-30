@@ -7,8 +7,8 @@ import PreSaleOnboarding from '../screens/onboarding/PreSale'
 import ContractScreen from '../screens/contract'
 import CompletionScreen from '../screens/onboarding/Completion'
 import ProfileScreen from '../screens/profile'
-import SupportScreen from '../screens/support'
 import NotificationsScreen from '../screens/notice'
+import SupportScreen from '../screens/support'
 
 const Stack = createStackNavigator()
 
