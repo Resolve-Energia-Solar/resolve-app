@@ -1,24 +1,46 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import Avatar from "./avatar";
 import { FormatCPF } from "../utils/FormatedCPF";
 
 export default function PersonalInfo({ contract, logout }) {
+  const [profileImage, setProfileImage] = useState(null);
+
   const firstDocument = contract?.results[0]?.customer?.first_document;
   const formattedCPF = FormatCPF(firstDocument);
   const name = contract?.results[0]?.customer?.complete_name;
   const email = contract?.results[0]?.customer?.email;
   const phone = contract?.results[0]?.customer?.phone_numbers[0]?.phone_number;
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Dados pessoais</Text>
       <View style={styles.profileImageContainer}>
-        <Avatar name={name} source={null} />
-        {/* <View style={styles.cameraIcon}>
-          <Ionicons name="camera" size={15} color="black" />
-        </View> */}
+        {profileImage ? (
+          <Image source={{ uri: profileImage }} style={styles.profileImage} />
+        ) : (
+          <Avatar name={name} source={null} />
+        )}
+        <TouchableOpacity onPress={pickImage}>
+          <View style={styles.cameraIcon}>
+            <Ionicons name="camera" size={15} color="black" />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.infoItem}>
@@ -76,7 +98,7 @@ const styles = StyleSheet.create({
   },
   cameraIcon: {
     position: "absolute",
-    right: 0,
+    left: 38,
     bottom: 0,
     backgroundColor: "#FFD700",
     borderRadius: 15,

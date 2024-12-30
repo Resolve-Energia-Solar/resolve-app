@@ -7,6 +7,7 @@ import {
   Alert,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { colors } from "../theme/colors";
 
 export const FloatingButtons = () => {
   const openWhatsApp = async () => {
@@ -15,12 +16,10 @@ export const FloatingButtons = () => {
     const whatsappWebUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`;
 
     try {
-      // Verifica se o esquema do aplicativo WhatsApp é suportado
       const appSupported = await Linking.canOpenURL(whatsappAppUrl);
       if (appSupported) {
         await Linking.openURL(whatsappAppUrl);
       } else {
-        // Verifica se o esquema da Web do WhatsApp é suportado
         const webSupported = await Linking.canOpenURL(whatsappWebUrl);
         if (webSupported) {
           await Linking.openURL(whatsappWebUrl);
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#000",
+    backgroundColor: colors.black,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 8,

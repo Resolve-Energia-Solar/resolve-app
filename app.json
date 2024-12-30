@@ -9,7 +9,24 @@
     "ios": {
       "newArchEnabled": true
     },
-    "plugins": ["expo-video", "expo-font"],
+    "plugins": [
+      "expo-video",
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permissão para usar a câmera",
+          "microphonePermission": "Permissão para usar o microfone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O aplicativo acessa suas fotos para permitir que você as compartilhe com seus amigos."
+        }
+      ]
+    ],
     "router": {
       "origin": "expo"
     },
