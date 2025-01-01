@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -8,21 +8,29 @@ import {
   Platform,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import Checkbox from "expo-checkbox"; 
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "../../../src/theme/colors";
 import StatusBarComponent from "../../components/statusBar";
+
 function ContractScreen() {
   const navigation = useNavigation();
   const { contract } = useGlobalContext();
-  requestSignatureKey =
+  const [isSigned, setIsSigned] = useState(false);
+  const [signLater, setSignLater] = useState(false);
+
+  const requestSignatureKey =
     contract.results[0].contract_submission.request_signature_key;
+
   const handleCloseModal = () => {
     navigation.goBack();
   };
 
   const handleAdvance = () => {
-    navigation.navigate("Completion");
+    if (isSigned || signLater) {
+      navigation.navigate("Completion");
+    }
   };
 
   const htmlContent = `
@@ -34,9 +42,10 @@ function ContractScreen() {
         <title>Simple widget usage</title>
         <script src="https://cdn-public-library.clicksign.com/embedded/embedded.min-1.0.0.js" type="text/javascript"></script>
         <style>
-  #container iframe {
-    border: none !important;
-</style>
+          #container iframe {
+            border: none !important;
+          }
+        </style>
       </head>
       <body>
         <div id="container" style="height: 650px"></div>
@@ -50,7 +59,10 @@ function ContractScreen() {
           widget.mount('container');
           
           widget.on('loaded', function(ev) { console.log('loaded!'); });
-          widget.on('signed', function(ev) { console.log('signed!'); });
+          widget.on('signed', function(ev) { 
+            console.log('signed!'); 
+            window.ReactNativeWebView.postMessage(JSON.stringify({ event: 'signed' }));
+          });
           widget.on('resized', function(height) {
             document.getElementById('container').style.height = height + 'px';
           });
@@ -75,7 +87,23 @@ function ContractScreen() {
             startInLoadingState={true}
             source={{ html: htmlContent }}
             style={styles.webview}
+            onMessage={(event) => {
+              const { event: eventName } = JSON.parse(event.nativeEvent.data);
+              if (eventName === "signed") {
+                setIsSigned(true);
+              }
+            }}
           />
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              value={signLater}
+              onValueChange={setSignLater}
+              color={signLater ? colors.yellowDark : undefined}
+            />
+            <Text style={styles.checkboxLabel}>
+              Desejo assinar depois
+            </Text>
+          </View>
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.button, styles.closeButton]}
@@ -85,9 +113,18 @@ function ContractScreen() {
               <Text style={styles.buttonText}>Fechar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.advanceButton]}
+              style={[
+                styles.button,
+                styles.advanceButton,
+                {
+                  backgroundColor: isSigned || signLater
+                    ? colors.yellowDark
+                    : "gray",
+                },
+              ]}
               onPress={handleAdvance}
-              activeOpacity={0.8}
+              activeOpacity={isSigned || signLater ? 0.8 : 1}
+              disabled={!isSigned && !signLater}
             >
               <Text style={styles.buttonText}>Avançar</Text>
             </TouchableOpacity>
@@ -124,6 +161,15 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 10,
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+    fontSize: 16,
   },
   buttonRow: {
     flexDirection: "row",

@@ -2,15 +2,12 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { DocumentItem } from "./documentItem";
 
-export default function DocumentsList() {
+export default function DocumentsList({ contract }) {
+  const contractNumber = contract.results[0].contract_number;
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Seus documentos</Text>
-      <DocumentItem title="Contrato 02593" address="TV. 2ª de Queluz, 678" />
-      <DocumentItem
-        title="Contrato 02596"
-        address="Rua Antonio Barreto, 1198"
-      />
+      <DocumentItem title={`Contrato ${contractNumber}`} address="" />
     </View>
   );
 }

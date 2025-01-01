@@ -57,6 +57,7 @@ const GlobalProvider = ({ children }) => {
     await AsyncStorage.removeItem('userId')
   }
 
+  
   return (
     <GlobalContext.Provider
       value={{

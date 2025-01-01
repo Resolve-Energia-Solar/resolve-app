@@ -1,6 +1,6 @@
 import { View, Image, Text, StyleSheet } from "react-native";
 
-export default function Avatar({ source, name = "", size = 48 }) {
+export default function Avatar({ source, name = "", size = 48, }) {
   const getInitials = (name) => {
     return name
       .split(" ")

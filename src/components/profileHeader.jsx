@@ -2,24 +2,31 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Avatar from "./avatar";
+import { useNavigation } from "@react-navigation/native";
 
-export default function ProfileHeader({ name }) {
+export default function ProfileHeader({ name, onPress }) {
   const displayName = name.split(" ").slice(0, 2).join(" ");
+  const navigation = useNavigation();
 
+  const handleProfile = () => {
+    navigation.navigate("Profile");
+  };
   return (
     <View style={styles.header}>
       <View style={styles.profile}>
         <View style={styles.avatar}>
-          <Avatar name={name} source={null} />
+          <TouchableOpacity onPress={handleProfile}>
+            <Avatar name={name} source={null} />
+          </TouchableOpacity>
           <View>
             <Text style={styles.greeting}>Olá,</Text>
             <Text style={styles.name}>{displayName}</Text>
           </View>
         </View>
 
-        <TouchableOpacity>
+       {/*  <TouchableOpacity>
           <Ionicons name="menu" size={24} color="black" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

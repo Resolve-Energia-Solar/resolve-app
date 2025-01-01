@@ -9,6 +9,10 @@ import CompletionScreen from '../screens/onboarding/Completion'
 import ProfileScreen from '../screens/profile'
 import NotificationsScreen from '../screens/notice'
 import SupportScreen from '../screens/support'
+import Accommodation from '../screens/onboarding/Accommodation'
+import VideoReels from '../screens/videoReels'
+import PaymentScreen from '../screens/payment'
+import { ContractTrackingScreen } from '../screens/contractTracking'
 
 const Stack = createStackNavigator()
 
@@ -24,6 +28,13 @@ export default function StackNavigator () {
       <Stack.Screen name='Profile' component={ProfileScreen} />
       <Stack.Screen name='support' component={SupportScreen} />
       <Stack.Screen name='Notifications' component={NotificationsScreen} />
+      <Stack.Screen name='Accommodation' component={Accommodation} />
+      <Stack.Screen name='Reels' component={VideoReels} />
+      <Stack.Screen name='Payments' component={PaymentScreen} />
+      <Stack.Screen
+        name='ContractTracking'
+        component={ContractTrackingScreen}
+      />
     </Stack.Navigator>
   )
 }

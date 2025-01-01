@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import Avatar from "./avatar";
 import { FormatCPF } from "../utils/FormatedCPF";
+import { colors } from "../theme/colors";
 
 export default function PersonalInfo({ contract, logout }) {
   const [profileImage, setProfileImage] = useState(null);
@@ -65,9 +66,11 @@ export default function PersonalInfo({ contract, logout }) {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.editButton}>
+          <Ionicons name="pencil" size={17} color={colors.black} />
           <Text style={styles.editButtonText}>Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+          <Ionicons name="log-out" size={17} color={colors.black} />
           <Text style={styles.logoutButtonText}>Sair do Aplicativo</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   infoItem: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     fontSize: 14,
@@ -125,9 +128,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: "#333",
-    borderRadius: 20,
+    borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
   editButtonText: {
     color: "#333",
@@ -135,9 +141,12 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: "#f0f0f0",
-    borderRadius: 20,
+    borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
   logoutButtonText: {
     color: "#333",

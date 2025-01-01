@@ -3,15 +3,35 @@
     "name": "resolve-app",
     "slug": "resolve-app",
     "version": "1.0.0",
+    "scheme": "resolve",
+    "icon": "./assets/images/icon.png",
     "android": {
       "newArchEnabled": true
     },
     "ios": {
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleLocalizations": ["pt"],
+        "CFBundleIconName": "AppIcon"
+
+      },
+      "supportsTablet": true,
+      "bundleIdentifier": "com.onesignal.example",
+
       "newArchEnabled": true
     },
     "plugins": [
       "expo-video",
       "expo-font",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "resolve",
+          "enableGooglePay": false,
+          "enableApplePay": false,
+          "publishableKey": "pk_live_51PKrPCCjxke1cLVHPj5pROXcOreU3asF7qWo73WiMRVldRVrab0y54Ylp2ROYRFMFhslrZS3EljZ0Gqx5JRqalUp007VQvrFID"
+        }
+      ],
       [
         "expo-camera",
         {
@@ -24,6 +44,12 @@
         "expo-image-picker",
         {
           "photosPermission": "O aplicativo acessa suas fotos para permitir que você as compartilhe com seus amigos."
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
         }
       ]
     ],
