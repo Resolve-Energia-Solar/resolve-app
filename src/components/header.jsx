@@ -1,8 +1,15 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { colors } from "../theme/colors";
 
 export default function Header({ title }) {
   const navigation = useNavigation();
@@ -10,8 +17,8 @@ export default function Header({ title }) {
     navigation.replace("Home");
   };
   return (
-    <View style={styles.header}>
-      <StatusBar style="dark" />
+    <View style={Platform.OS === "ios" ? styles.header : styles.headerAndroid}>
+      <StatusBar style="dark" backgroundColor={colors.yellowDark} />
       <View style={styles.profile}>
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Ionicons name="chevron-back" size={24} color="black" />
@@ -30,7 +37,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 20,
     paddingVertical: 50,
-    backgroundColor: "#FFB800",
+    backgroundColor: colors.yellowDark,
+  },
+  headerAndroid: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    backgroundColor: colors.yellowDark,
   },
   profile: {
     width: "100%",

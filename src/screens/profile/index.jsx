@@ -53,7 +53,7 @@ export default function ProfileScreen() {
       <Header title="Perfil" handleGoBack={handleGoBack} />
       <ScrollView style={styles.content}>
         <PersonalInfo contract={contract} logout={confirmLogout} />
-        <DocumentsList contract={contract}/>
+        <DocumentsList contract={contract} />
       </ScrollView>
       <BottomNav />
       <Modal

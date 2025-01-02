@@ -7,10 +7,14 @@ import {
   SafeAreaView,
   Image,
   Alert,
+  Platform,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import Header from "../../components/header";
+import { colors } from "../../theme/colors";
+import { StatusBar } from "expo-status-bar";
+import StatusBarComponent from "../../components/statusBar";
 
 export default function PaymentScreen() {
   const [showWebView, setShowWebView] = useState(false);
@@ -27,9 +31,14 @@ export default function PaymentScreen() {
   if (showWebView) {
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        {Platform.OS !== "ios" ? (
+          <StatusBar style="dark" backgroundColor={colors.yellowDark} />
+        ) : (
+          <StatusBarComponent />
+        )}
         <WebView
           source={{
-            uri: "https://buy.stripe.com/test_fZe01Va1T13A1UIdQQ",
+            uri: "https://main.d31oam9y28ejcy.amplifyapp.com/kirvano/e15a830e-383f-4f3d-9360-c8d3cd61e40f",
           }}
           style={{ flex: 1, marginTop: 50 }}
           onNavigationStateChange={handleNavigationChange}
@@ -49,10 +58,7 @@ export default function PaymentScreen() {
       <Header title="Checkout" />
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image
-            source={require("../../../assets/images/Group.png")}
-           
-          />
+          <Image source={require("../../../assets/images/Group.png")} />
           <Text style={styles.title}>
             Plano Anual de Assistência e Monitoramento Resolve
           </Text>
@@ -75,7 +81,9 @@ export default function PaymentScreen() {
               <Text style={styles.payButtonText}>Pagar com Cartão</Text>
             </TouchableOpacity>
           ) : (
-            <Text style={styles.successText}>Pagamento realizado com sucesso!</Text>
+            <Text style={styles.successText}>
+              Pagamento realizado com sucesso!
+            </Text>
           )}
         </View>
       </View>

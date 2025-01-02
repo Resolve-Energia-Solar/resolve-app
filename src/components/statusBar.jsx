@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { colors } from "../theme/colors";
 
 export default function StatusBarComponent() {
-  return <View style={styles.container}></View>;
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({

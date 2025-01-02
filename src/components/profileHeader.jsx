@@ -1,10 +1,18 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Avatar from "./avatar";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../theme/colors";
+import { StatusBar } from "expo-status-bar";
 
-export default function ProfileHeader({ name, onPress }) {
+export default function ProfileHeader({ name }) {
   const displayName = name.split(" ").slice(0, 2).join(" ");
   const navigation = useNavigation();
 
@@ -12,7 +20,8 @@ export default function ProfileHeader({ name, onPress }) {
     navigation.navigate("Profile");
   };
   return (
-    <View style={styles.header}>
+    <View style={Platform.OS === "ios" ? styles.header : styles.headerAndroid}>
+      <StatusBar style="dark" backgroundColor={colors.yellowDark} />
       <View style={styles.profile}>
         <View style={styles.avatar}>
           <TouchableOpacity onPress={handleProfile}>
@@ -24,9 +33,9 @@ export default function ProfileHeader({ name, onPress }) {
           </View>
         </View>
 
-       {/*  <TouchableOpacity>
+        <TouchableOpacity>
           <Ionicons name="menu" size={24} color="black" />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -37,7 +46,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 20,
     paddingVertical: 40,
-    backgroundColor: "#FFB800",
+    backgroundColor: colors.yellowDark,
+    alignContent: "center",
+    alignItems: "center",
+  },
+  headerAndroid: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: colors.yellowDark,
     alignContent: "center",
     alignItems: "center",
   },
@@ -55,12 +72,12 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 14,
-    color: "#000",
+    color: colors.black,
   },
   name: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#000",
+    color: colors.black,
   },
   menu: {
     width: 24,

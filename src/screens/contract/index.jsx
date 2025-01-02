@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import Checkbox from "expo-checkbox"; 
+import Checkbox from "expo-checkbox";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "../../../src/theme/colors";
@@ -21,11 +21,13 @@ function ContractScreen() {
   const [signLater, setSignLater] = useState(false);
 
   const requestSignatureKey =
-    contract.results[0].contract_submission.request_signature_key;
+    contract?.results[0]?.contract_submission?.request_signature_key;
 
-  const handleCloseModal = () => {
-    navigation.goBack();
-  };
+  useEffect(() => {
+    if (!requestSignatureKey) {
+      navigation.navigate("Home");
+    }
+  }, [requestSignatureKey, navigation]);
 
   const handleAdvance = () => {
     if (isSigned || signLater) {
@@ -100,26 +102,16 @@ function ContractScreen() {
               onValueChange={setSignLater}
               color={signLater ? colors.yellowDark : undefined}
             />
-            <Text style={styles.checkboxLabel}>
-              Desejo assinar depois
-            </Text>
+            <Text style={styles.checkboxLabel}>Desejo assinar depois</Text>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.closeButton]}
-              onPress={handleCloseModal}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.buttonText}>Fechar</Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.button,
                 styles.advanceButton,
                 {
-                  backgroundColor: isSigned || signLater
-                    ? colors.yellowDark
-                    : "gray",
+                  backgroundColor:
+                    isSigned || signLater ? colors.yellowDark : "gray",
                 },
               ]}
               onPress={handleAdvance}
@@ -149,7 +141,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "100%",
-    height: "95%",
+    height: "100%",
     backgroundColor: "white",
     borderRadius: 10,
     overflow: "hidden",
@@ -182,9 +174,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     marginHorizontal: 5,
-  },
-  closeButton: {
-    backgroundColor: "black",
   },
   advanceButton: {
     backgroundColor: colors.yellowDark,

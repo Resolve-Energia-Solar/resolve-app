@@ -13,7 +13,7 @@ export default function Banner() {
 
 const styles = StyleSheet.create({
   banner: {
-    padding: 10,
+    marginVertical: 16,
     borderRadius: 12,
     width: "100%",
     justifyContent: "flex-end",

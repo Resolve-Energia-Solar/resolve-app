@@ -1,16 +1,25 @@
-import { View, Text, Image, StyleSheet, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  Platform,
+} from "react-native";
 import Button from "../../../components/button";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CompletionScreen() {
-    const navigation = useNavigation();
-  
+  const navigation = useNavigation();
+
   const handleGoHome = () => {
     navigation.navigate("Home");
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={Platform.OS === "ios" ? styles.container : styles.containerAndroid}
+    >
       <View style={styles.content}>
         <Image
           source={require("../../../../assets/images/resolve-logo.png")}
@@ -43,6 +52,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
+  },
+  containerAndroid: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    marginTop: 20,
   },
   content: {
     flex: 1,

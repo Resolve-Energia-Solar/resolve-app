@@ -1,6 +1,15 @@
-import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Image,
+  Platform,
+} from "react-native";
 import Button from "../../../components/button";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { colors } from "../../../theme/colors";
 
 export default function PreSaleOnboarding() {
   const navigation = useNavigation();
@@ -11,7 +20,10 @@ export default function PreSaleOnboarding() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <StatusBar style="dark" backgroundColor={colors.yellowDark} />
+      <View
+        style={Platform.OS === "ios" ? styles.content : styles.contentAndroid}
+      >
         <Image
           source={require("../../../../assets/images/resolve-logo.png")}
           style={styles.logo}
@@ -47,6 +59,12 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: "center",
   },
+  contentAndroid: {
+    flex: 1,
+    padding: 24,
+    alignItems: "center",
+    marginTop: 20,
+  },
   logo: {
     width: 120,
     height: 40,
@@ -54,7 +72,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 400,
+    height: 350,
     marginBottom: 24,
   },
   title: {
