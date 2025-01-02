@@ -56,7 +56,9 @@ export default function PersonalInfo({ contract, logout }) {
 
       <View style={styles.infoItem}>
         <Text style={styles.label}>Telefone com DDD</Text>
-        <Text style={styles.value}>{!phone ? "Telefone não cadastrado" : phone}</Text>
+        <Text style={styles.value}>
+          {!phone ? "Telefone não cadastrado" : phone}
+        </Text>
       </View>
 
       <View style={styles.infoItem}>
@@ -89,6 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    color: colors.black,
   },
   profileImageContainer: {
     marginBottom: 20,

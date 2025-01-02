@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "746385734542",
+    "project_id": "resolve-solar-16c48",
+    "storage_bucket": "resolve-solar-16c48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746385734542:android:aa5a41f8b23e1232cc02df",
+        "android_client_info": {
+          "package_name": "com.resolveCliente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIlMRDJnOZZP4n8-8IRhpV5GwRsVLMWqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

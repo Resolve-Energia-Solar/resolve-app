@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../theme/colors";
 
 export const TimelineItem = ({ item }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -10,14 +11,14 @@ export const TimelineItem = ({ item }) => {
   const isPending = !item.completed && !item.highlighted;
   const isCompleted = item.completed;
   const isCurrent = item.highlighted;
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   const handleAction = () => {
     if (item.onAction) {
-      item.onAction(); 
+      item.onAction();
     }
     if (item.route) {
-      navigation.navigate(item.route); 
+      navigation.navigate(item.route);
     }
   };
   return (
@@ -207,11 +208,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
+    color: colors.black,
   },
   modalText: {
     fontSize: 14,
     color: "#333",
     marginBottom: 20,
+    color: colors.black,
   },
   modalCloseButton: {
     alignSelf: "flex-end",
@@ -225,4 +228,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

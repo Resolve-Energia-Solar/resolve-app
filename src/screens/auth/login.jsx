@@ -158,16 +158,20 @@ export default function LoginScreen() {
             <Input
               label="CPF"
               placeholder="000.000.000-00"
+              placeholderTextColor="#adadad"
               required
               value={cpf}
               onChangeText={setCpf}
               keyboardType="numeric"
               maskType="cpf"
+              color="#333"
             />
 
             <Input
               label="Data de Nascimento"
               placeholder="01/01/1980"
+              placeholderTextColor="#adadad"
+              color="#333"
               required
               value={birthDate}
               onChangeText={setBirthDate}

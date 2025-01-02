@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { colors } from "../theme/colors";
 
 export default function UnitInfo() {
   return (
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 12,
+    color: colors.black,
   },
   infoCard: {
     backgroundColor: "white",
@@ -50,6 +52,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "600",
     width: 80,
+    color: colors.black,
   },
   value: {
     flex: 1,

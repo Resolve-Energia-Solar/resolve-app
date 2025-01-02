@@ -8,13 +8,13 @@ export default function Input({
   value,
   onChangeText,
   keyboardType,
-  maskType, 
+  maskType,
 }) {
   const renderInput = () => {
-    if (maskType === 'cpf') {
+    if (maskType === "cpf") {
       return (
         <TextInputMask
-          type={'cpf'}
+          type={"cpf"}
           style={styles.input}
           placeholder={placeholder}
           value={value}
@@ -24,13 +24,13 @@ export default function Input({
         />
       );
     }
-    
-    if (maskType === 'date') {
+
+    if (maskType === "date") {
       return (
         <TextInputMask
-          type={'custom'}
+          type={"custom"}
           options={{
-            mask: '99/99/9999'
+            mask: "99/99/9999",
           }}
           style={styles.input}
           placeholder={placeholder}
@@ -50,6 +50,7 @@ export default function Input({
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         placeholderTextColor="#adadad"
+        color="#333"
       />
     );
   };
@@ -85,5 +86,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 16,
     backgroundColor: "#FFF",
+    placeholderTextColor: "#adadad",
+    color: "#333",
   },
 });

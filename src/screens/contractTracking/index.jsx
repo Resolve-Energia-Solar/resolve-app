@@ -5,6 +5,7 @@ import { TimelineItem } from "../../components/timelineItem";
 import { BottomNav } from "../../components/bottomNav";
 import Header from "../../components/header";
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { colors } from "../../theme/colors";
 
 const timelineData = [
   {
@@ -105,5 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     marginBottom: 16,
+    color: colors.black,
   },
 });

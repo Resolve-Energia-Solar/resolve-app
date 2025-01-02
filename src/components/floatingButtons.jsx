@@ -11,30 +11,25 @@ import { colors } from "../theme/colors";
 
 export const FloatingButtons = () => {
   const openWhatsApp = async () => {
-    const phoneNumber = "559140048688";
-    const whatsappAppUrl = `whatsapp://send?phone=${phoneNumber}`;
-    const whatsappWebUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`;
+    const phoneNumber = '559140048688'
+    const whatsappAppUrl = `whatsapp://send?phone=${phoneNumber}`
+    const whatsappWebUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`
 
     try {
-      const appSupported = await Linking.canOpenURL(whatsappAppUrl);
+      const appSupported = await Linking.canOpenURL(whatsappAppUrl)
       if (appSupported) {
-        await Linking.openURL(whatsappAppUrl);
+        await Linking.openURL(whatsappAppUrl)
       } else {
-        const webSupported = await Linking.canOpenURL(whatsappWebUrl);
-        if (webSupported) {
-          await Linking.openURL(whatsappWebUrl);
-        } else {
-          throw new Error("WhatsApp não está disponível.");
-        }
+        await Linking.openURL(whatsappWebUrl)
       }
     } catch (error) {
-      console.error("Erro:", error);
+      console.error('Erro:', error)
       Alert.alert(
-        "Erro",
-        "Não foi possível abrir o WhatsApp. Verifique se ele está instalado ou tente novamente mais tarde."
-      );
+        'Erro',
+        'Falha ao abrir o WhatsApp. Por favor, tente novamente mais tarde.',
+      )
     }
-  };
+  }
   const openPhone = () => {
     const phoneNumber = "tel:40048688";
     Linking.openURL(phoneNumber).catch((err) => console.error("Error:", err));

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import { colors } from "../theme/colors";
 
 export const ContractCard = ({ number, address }) => (
   <View style={styles.container}>
@@ -34,9 +35,11 @@ const styles = StyleSheet.create({
   number: {
     fontWeight: "600",
     fontSize: 16,
+    color: colors.black,
   },
   address: {
     color: "#6B7280",
     marginTop: 4,
+    color: colors.black,
   },
 });

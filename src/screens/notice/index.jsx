@@ -6,6 +6,7 @@ import Header from "../../components/header";
 import { FloatingButtons } from "../../components/floatingButtons";
 import { BottomNav } from "../../components/bottomNav";
 import NotificationCard from "../../components/notificationsCard";
+import { colors } from "../../theme/colors";
 
 export default function NotificationsScreen() {
   return (
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    color: colors.black,
   },
   notificationsList: {
     flex: 1,

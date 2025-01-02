@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { colors } from "../theme/colors";
 
 export default function NotificationCard({ title, description, time }) {
   return (
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     flex: 1,
     marginRight: 8,
+    color: colors.black,
   },
   description: {
     color: "#666",

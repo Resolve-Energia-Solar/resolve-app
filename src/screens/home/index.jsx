@@ -7,6 +7,7 @@ import { BottomNav } from "../../components/bottomNav";
 import { FloatingButtons } from "../../components/floatingButtons";
 import { useNavigation } from "@react-navigation/native";
 import PlanCard from "../../components/planCard";
+import { colors } from "../../theme/colors";
 
 export default function Home() {
   const { contract } = useGlobalContext();
@@ -50,9 +51,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
+    color: colors.black,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 16,
+    color: colors.black,
   },
 });

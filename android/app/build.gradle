@@ -88,13 +88,21 @@ android {
 
     namespace "com.resolveapp"
     defaultConfig {
-        applicationId "com.resolveapp"
+        applicationId "com.resolveCliente"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 30
+        versionName "3.0.0"
     }
     signingConfigs {
+        release{
+            if(project.hasProperty('APP_RELEASE_STORE_FILE')){
+                storeFile file(APP_RELEASE_STORE_FILE)
+                storePassword(APP_RELEASE_STORE_PASSWORD)
+                keyAlias(APP_RELEASE_KEY_ALIAS)
+                keyPassword(APP_RELEASE_KEY_PASSWORD)
+            }
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -109,7 +117,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

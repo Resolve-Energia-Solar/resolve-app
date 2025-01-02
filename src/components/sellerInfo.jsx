@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { colors } from "../theme/colors";
 
 export default function SellerInfo() {
   return (
@@ -9,7 +10,7 @@ export default function SellerInfo() {
         <View style={styles.profileSection}>
           <Image
             style={styles.avatar}
-            source={{ uri: 'https://i.pravatar.cc/100' }}
+            source={{ uri: "https://i.pravatar.cc/100" }}
           />
           <View style={styles.nameSection}>
             <Text style={styles.name}>João Silva</Text>
@@ -40,22 +41,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 12,
+    color: colors.black,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   profileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   avatar: {
@@ -69,27 +71,31 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: colors.black,
   },
   role: {
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   contactSection: {
     borderTopWidth: 1,
-    borderTopColor: '#eee',
+    borderTopColor: "#eee",
     paddingTop: 16,
   },
   infoItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 8,
+    color: colors.black,
   },
+
   label: {
-    fontWeight: '600',
+    fontWeight: "600",
     width: 80,
+    color: colors.black,
   },
   value: {
     flex: 1,
-    color: '#666',
+    color: "#666",
   },
 });

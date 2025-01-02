@@ -14,6 +14,7 @@ import Header from "../../components/header";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { colors } from "../../theme/colors";
 
 export default function ProfileScreen() {
   const { contract, resetUser } = useGlobalContext();
@@ -115,11 +116,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: colors.black,
   },
   modalMessage: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
+    color: colors.black,
   },
   modalActions: {
     flexDirection: "row",

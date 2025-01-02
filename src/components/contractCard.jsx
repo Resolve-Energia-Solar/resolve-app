@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { colors } from "../theme/colors";
 
 export const ContractCard = ({ number, address, handleNavigate }) => {
   return (
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
   contractNumber: {
     fontWeight: "bold",
     fontSize: 16,
+    color: colors.black,
   },
   address: {
     color: "#666",
@@ -62,6 +64,6 @@ const styles = StyleSheet.create({
   buttonText: {
     marginRight: 5,
     fontSize: 14,
-    color: "#000",
+    color: colors.black,
   },
 });
