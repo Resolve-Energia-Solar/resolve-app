@@ -9,12 +9,20 @@ import { colors } from "../theme/colors";
 export default function PersonalInfo({ contract, logout }) {
   const [profileImage, setProfileImage] = useState(null);
 
-  const firstDocument = contract?.results[0]?.customer?.first_document;
+  const firstDocument =
+    contract?.results[0]?.customer?.first_document ||
+    contract.customerDetails.first_document;
   const formattedCPF = FormatCPF(firstDocument);
-  const name = contract?.results[0]?.customer?.complete_name;
-  const email = contract?.results[0]?.customer?.email;
-  const phone = contract?.results[0]?.customer?.phone_numbers[0]?.phone_number;
-
+  const name =
+    contract?.results[0]?.customer?.complete_name ||
+    contract.customerDetails.name;
+  const email =
+    contract?.results[0]?.customer?.email || contract.customerDetails.email;
+  const phone =
+    contract?.results[0]?.customer?.customer_contact_numbers?.[0]
+      ?.phone_number ||
+    contract?.customerDetails?.customer_contact_numbers?.[0]?.phone_number ||
+    "Telefone não disponível";
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -67,10 +75,10 @@ export default function PersonalInfo({ contract, logout }) {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton}>
+        {/* <TouchableOpacity style={styles.editButton}>
           <Ionicons name="pencil" size={17} color={colors.black} />
           <Text style={styles.editButtonText}>Editar</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={logout} style={styles.logoutButton}>
           <Ionicons name="log-out" size={17} color={colors.black} />
           <Text style={styles.logoutButtonText}>Sair do Aplicativo</Text>

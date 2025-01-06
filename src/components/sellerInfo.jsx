@@ -2,7 +2,18 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { colors } from "../theme/colors";
 
-export default function SellerInfo() {
+export default function SellerInfo({ seller }) {
+  const { complete_name, email, phone_numbers, profile_picture } = seller || {};
+
+  if (!seller) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Seu Vendedor</Text>
+        <Text style={styles.noDataMessage}>Dados do vendedor não disponíveis.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Seu Vendedor</Text>
@@ -10,17 +21,22 @@ export default function SellerInfo() {
         <View style={styles.profileSection}>
           <Image
             style={styles.avatar}
-            source={{ uri: "https://i.pravatar.cc/100" }}
+            source={{
+              uri: profile_picture || "https://i.pravatar.cc/100",
+            }}
           />
           <View style={styles.nameSection}>
-            <Text style={styles.name}>João Silva</Text>
+            <Text style={styles.name}>
+              {complete_name || "Nome não disponível"}
+            </Text>
             <Text style={styles.role}>Consultor de Vendas</Text>
           </View>
         </View>
-        <View style={styles.contactSection}>
-          <InfoItem label="Email" value="joao.silva@empresa.com" />
-          <InfoItem label="Telefone" value="(11) 99999-8888" />
-        </View>
+        {/* Exemplo de como adicionar outras informações */}
+        {email && <InfoItem label="Email" value={email} />}
+        {phone_numbers && phone_numbers.length > 0 && (
+          <InfoItem label="Telefone" value={phone_numbers[0]} />
+        )}
       </View>
     </View>
   );
@@ -44,6 +60,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
     color: colors.black,
+  },
+  noDataMessage: {
+    fontSize: 16,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
   },
   card: {
     backgroundColor: "white",
@@ -86,9 +108,7 @@ const styles = StyleSheet.create({
   infoItem: {
     flexDirection: "row",
     marginBottom: 8,
-    color: colors.black,
   },
-
   label: {
     fontWeight: "600",
     width: 80,

@@ -19,7 +19,7 @@ function ContractScreen() {
   const { contract } = useGlobalContext();
   const [isSigned, setIsSigned] = useState(false);
   const [signLater, setSignLater] = useState(false);
-
+  console.log("contrato", contract?.results[0]?.contract_submission);
   const requestSignatureKey =
     contract?.results[0]?.contract_submission?.request_signature_key;
 
@@ -178,9 +178,10 @@ const styles = StyleSheet.create({
   },
   advanceButton: {
     backgroundColor: colors.yellowDark,
+    marginBottom: 10,
   },
   buttonText: {
-    color: "white",
+    color: colors.white,
     fontSize: 16,
     fontWeight: "600",
   },

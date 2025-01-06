@@ -103,12 +103,18 @@ export default function LoginScreen() {
 
         try {
           console.log("Buscando dados do contrato...", user.id);
-          const contractData = await contractService.getContractData(user.id);
+          const userIdClient = await AsyncStorage.getItem("userIdClient");
+          console.log("userIdClient:", userIdClient);
+
+          const contractData = await contractService.getContractData(
+            user.id,
+            userIdClient
+          );
           console.log("Dados do contrato:", contractData);
 
           const preSaleContract = contractData.results.find(
             (contract) =>
-              (contract.is_pre_sale = true && contract.signature_date === null)
+              contract.is_pre_sale === true && contract.signature_date === null
           );
 
           if (preSaleContract) {

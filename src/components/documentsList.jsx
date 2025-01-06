@@ -4,7 +4,10 @@ import { DocumentItem } from "./documentItem";
 import { colors } from "../theme/colors";
 
 export default function DocumentsList({ contract }) {
-  const contractNumber = contract.results[0].contract_number;
+  const contractNumber =
+    contract?.results?.[0]?.contract_number ||
+    contract?.customerDetails?.sales?.[0]?.contract_number ||
+    "Número do contrato não disponível";
   return (
     <View style={styles.container}>
       <Text color="#333" style={styles.sectionTitle}>

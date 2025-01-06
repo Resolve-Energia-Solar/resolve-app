@@ -1,86 +1,111 @@
 import { apiConfig } from '../config/apiConfig'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const formatCPF = cpf => {
-  return cpf.replace(/[^\d]/g, '') 
-}
+const formatCPF = cpf => cpf.replace(/[^\d]/g, '')
 
 const formatBirthDate = birthDate => {
   if (!birthDate || birthDate.split('/').length !== 3) {
-    throw new Error('Data de nascimento inválida');
+    throw new Error('Data de nascimento inválida')
   }
-  
-  const [day, month, year] = birthDate.split('/');
-  
-  const formattedDay = day.padStart(2, '0');
-  const formattedMonth = month.padStart(2, '0');
-
-  return `${year}-${formattedMonth}-${formattedDay}`;
+  const [day, month, year] = birthDate.split('/')
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 }
 
 const validateInputs = (cpf, birthDate) => {
-  const formattedCpf = formatCPF(cpf);
+  const formattedCpf = formatCPF(cpf)
   if (formattedCpf.length !== 11) {
-    throw new Error('CPF inválido');
+    throw new Error('CPF inválido')
+  }
+  return {
+    formattedCpf,
+    formattedBirthDate: formatBirthDate(birthDate)
+  }
+}
+
+const loginCRM = async (cpf, birthDate) => {
+  const crmData = {
+    first_document: cpf,
+    birth_date: birthDate
+  }
+  const response = await fetch(apiConfig.crm.loginUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(crmData)
+  })
+
+  if (!response.ok) {
+    throw new Error('Erro no login CRM: ' + response.statusText)
   }
 
-  const formattedBirthDate = formatBirthDate(birthDate);
-  return { formattedCpf, formattedBirthDate };
+  return await response.json()
+}
+
+const loginClientAPI = async (cpf, birthDate) => {
+  const response = await fetch(apiConfig.client.customerLogin(cpf, birthDate), {
+    method: 'GET',
+    headers: {
+      Authorization: 'PAYSANDU2024',
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error('Erro ao buscar informações do cliente na API Client.')
+  }
+
+  return await response.json()
 }
 
 const login = async (cpf, birthDate, setUserInfo) => {
+  const { formattedCpf, formattedBirthDate } = validateInputs(cpf, birthDate)
+
+  let crmLoginSuccess = false
+  let clientLoginSuccess = false
+  let user = null
+  let customerData = null
+
   try {
-    const { formattedCpf, formattedBirthDate } = validateInputs(cpf, birthDate);
-
-    const formattedData = {
-      first_document: formattedCpf,
-      birth_date: formattedBirthDate 
-    }
-
-    const response = await fetch(apiConfig.loginUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formattedData)
-    });
-
-    if (!response.ok) {
-      let errorMessage = 'Erro desconhecido. Tente novamente mais tarde.';
-      switch (response.status) {
-        case 401:
-          errorMessage = 'Credenciais inválidas. Verifique e tente novamente.';
-          break;
-        case 403:
-          errorMessage = 'Acesso negado. Você não tem permissão para acessar este recurso.';
-          break;
-        case 404:
-          errorMessage = 'Usuário não encontrado. Verifique o CPF ou a data de nascimento.';
-          break;
-        case 500:
-          errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
-          break;
-      }
-      throw new Error(errorMessage);
-    }
-
-    const user = await response.json();
-
+    user = await loginCRM(formattedCpf, formattedBirthDate)
     if (user && user.access && user.refresh && user.id) {
-      await AsyncStorage.setItem('accessToken', user.access);
-      await AsyncStorage.setItem('refreshToken', user.refresh);
-      await AsyncStorage.setItem('userId', user.id.toString());
+      crmLoginSuccess = true
 
-      setUserInfo(user);
+      await AsyncStorage.setItem('accessToken', user.access)
+      await AsyncStorage.setItem('refreshToken', user.refresh)
+      await AsyncStorage.setItem('userId', user.id.toString())
 
-      return { success: true, user };
+      setUserInfo(user)
     }
-
-    throw new Error('Dados do usuário incompletos ou inválidos.');
   } catch (error) {
-    console.log('Erro no login:', error.message);
-    return { success: false, error: error.message };
+    console.log('Erro no login CRM:', error.message)
   }
+
+  try {
+    customerData = await loginClientAPI(formattedCpf, formattedBirthDate)
+    console.log('Dados do cliente:', customerData)
+    clientLoginSuccess = true
+
+    if (customerData.access && customerData.refresh && customerData.id) {
+      await AsyncStorage.setItem('accessTokenClient', customerData.access)
+      await AsyncStorage.setItem('refreshTokenClient', customerData.refresh)
+      await AsyncStorage.setItem('userIdClient', customerData.id)
+    }
+  } catch (error) {
+    console.log('Erro no login na API Client:', error.message)
+  }
+
+  if (crmLoginSuccess || clientLoginSuccess) {
+    return {
+      success: true,
+      user: {
+        ...user,
+        customerDetails: customerData
+      }
+    }
+  }
+
+  return { success: false, error: 'Falha no login em ambas as APIs.' }
 }
 
 export default {

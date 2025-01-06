@@ -5,14 +5,19 @@ import UnitInfo from "../../components/unitInfo";
 import SellerInfo from "../../components/sellerInfo";
 import { FloatingButtons } from "../../components/floatingButtons";
 import { BottomNav } from "../../components/bottomNav";
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 export default function SupportScreen() {
+  const { contract } = useGlobalContext();
+  const unit = contract?.results[0]?.branch;
+  const seller = contract.results[0]?.seller;
+
   return (
     <View style={styles.container}>
       <Header title="Suporte" />
       <ScrollView style={styles.content}>
-        <UnitInfo />
-        <SellerInfo />
+        <UnitInfo unit={unit} />
+        <SellerInfo seller={seller} />
       </ScrollView>
       <FloatingButtons />
       <BottomNav />

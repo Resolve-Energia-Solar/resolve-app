@@ -11,8 +11,15 @@ import { colors } from "../../theme/colors";
 
 export default function Home() {
   const { contract } = useGlobalContext();
-  const name = contract.results[0].customer.complete_name;
-  const contractNumber = contract.results[0].contract_number;
+  console.log("contract home", contract);
+  const name =
+    contract?.customerDetails?.name ||
+    contract?.results?.[0]?.customer?.complete_name ||
+    "Nome não disponível";
+  const contractNumber =
+    contract?.results?.[0]?.contract_number ||
+    contract?.customerDetails?.sales?.[0]?.contract_number ||
+    "Número do contrato não disponível";
   const navigation = useNavigation();
   const handleNavigate = () => {
     navigation.navigate("ContractTracking");

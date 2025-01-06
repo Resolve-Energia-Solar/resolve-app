@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { notifications } from "../../data/notification";
 import Header from "../../components/header";
@@ -18,14 +18,20 @@ export default function NotificationsScreen() {
       </View>
 
       <View style={styles.notificationsList}>
-        {notifications.map((notification) => (
-          <NotificationCard
-            key={notification.id}
-            title={notification.title}
-            description={notification.description}
-            time={notification.time}
-          />
-        ))}
+        {notifications.length > 0 ? (
+          notifications.map((notification) => (
+            <NotificationCard
+              key={notification.id}
+              title={notification.title}
+              description={notification.description}
+              time={notification.time}
+            />
+          ))
+        ) : (
+          <Text style={styles.noNotifications}>
+            Nenhuma notificação no momento.
+          </Text>
+        )}
       </View>
 
       <FloatingButtons />
@@ -53,5 +59,11 @@ const styles = StyleSheet.create({
   notificationsList: {
     flex: 1,
     padding: 16,
+  },
+  noNotifications: {
+    textAlign: "center",
+    fontSize: 16,
+    color: colors.gray,
+    marginTop: 20,
   },
 });

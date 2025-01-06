@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Image,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "../theme/colors";
@@ -8,8 +15,11 @@ export const TimelineItem = ({ item }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState(null);
 
-  const isPending = !item.completed && !item.highlighted;
-  const isCompleted = item.completed;
+  const isPending =
+    !item.completed &&
+    (item.highlighted === false || item.highlighted === 0 || !item.highlighted);
+  const isCompleted =
+    !!item.completed || item.highlighted === true || item.highlighted === 1;
   const isCurrent = item.highlighted;
   const navigation = useNavigation();
 
@@ -21,6 +31,7 @@ export const TimelineItem = ({ item }) => {
       navigation.navigate(item.route);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.timelineLeft}>
@@ -51,6 +62,17 @@ export const TimelineItem = ({ item }) => {
         <Text style={styles.description}>
           {item.description || "Sem descrição"}
         </Text>
+
+        {item.agent && (
+          <View style={styles.agentContainer}>
+            <Image
+              source={{ uri: item.agentPicture }}
+              style={styles.agentImage}
+            />
+            <Text style={styles.agentName}>{item.agent}</Text>
+          </View>
+        )}
+
         {item.actionText && (
           <TouchableOpacity style={styles.actionButton} onPress={handleAction}>
             <FontAwesome
@@ -61,6 +83,7 @@ export const TimelineItem = ({ item }) => {
             <Text style={styles.actionText}>{item.actionText}</Text>
           </TouchableOpacity>
         )}
+
         {isCompleted && (
           <View style={styles.ratingContainer}>
             <Text style={styles.ratingText}>Avalie esta etapa:</Text>
@@ -77,6 +100,7 @@ export const TimelineItem = ({ item }) => {
             </View>
           </View>
         )}
+
         <Modal
           visible={modalVisible}
           animationType="slide"
@@ -159,6 +183,22 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     color: "#6B7280",
+  },
+  agentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 12,
+  },
+  agentImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  agentName: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
   },
   actionButton: {
     flexDirection: "row",

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     paddingHorizontal: 20,
-    paddingVertical: 50,
+    paddingVertical: 30,
     backgroundColor: colors.yellowDark,
   },
   headerAndroid: {

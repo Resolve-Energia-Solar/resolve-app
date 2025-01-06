@@ -1,61 +1,96 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "../theme/colors";
 
-export default function UnitInfo() {
+const InfoRow = ({ label, value, iconName }) => (
+  <View style={styles.row}>
+    <MaterialIcons name={iconName} size={24} color="#555" style={styles.icon} />
+    <View style={styles.textContainer}>
+      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.value}>{value}</Text>
+    </View>
+  </View>
+);
+
+export default function UnitInfo({ unit }) {
+  // Verifica se os dados da unidade estão disponíveis
+  if (!unit || !unit.address || !unit.name) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Dados da Unidade</Text>
+        <Text style={styles.noDataMessage}>Dados da unidade não disponíveis.</Text>
+      </View>
+    );
+  }
+
+  const { name, address } = unit;
+
+  const fullAddress = `${address.street}, ${address.number}${
+    address.complement ? `, ${address.complement}` : ""
+  }, ${address.neighborhood} - ${address.city}, ${address.state} - CEP: ${
+    address.zip_code
+  }`;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Dados da Unidade</Text>
       <View style={styles.infoCard}>
-        <InfoRow label="Unidade" value="São Paulo - SP" />
-        <InfoRow label="Endereço" value="Av. Paulista, 1000" />
-        <InfoRow label="Telefone" value="(11) 3333-4444" />
-        <InfoRow label="CNPJ" value="12.345.678/0001-90" />
+        <InfoRow label="Unidade" value={name || "N/A"} iconName="business" />
+        <InfoRow
+          label="Endereço"
+          value={fullAddress}
+          iconName="location-on"
+        />
       </View>
-    </View>
-  );
-}
-
-function InfoRow({ label, value }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.label}>{label}:</Text>
-      <Text style={styles.value}>{value}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
+    backgroundColor: "#F8F8F8",
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 12,
-    color: colors.black,
+    color: "#333",
+    marginBottom: 16,
+  },
+  noDataMessage: {
+    fontSize: 16,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 20,
   },
   infoCard: {
-    backgroundColor: "white",
-    borderRadius: 8,
+    backgroundColor: colors.white,
     padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    borderRadius: 8,
+    shadowColor: colors.black,
     shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
   },
   row: {
     flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
+  icon: {
+    marginRight: 12,
+  },
+  textContainer: {
+    flex: 1,
+  },
   label: {
-    fontWeight: "600",
-    width: 80,
-    color: colors.black,
+    fontWeight: "bold",
+    color: "#555",
   },
   value: {
-    flex: 1,
-    color: "#666",
+    color: "#333",
   },
 });

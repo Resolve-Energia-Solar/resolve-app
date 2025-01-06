@@ -1,24 +1,23 @@
 {
   "expo": {
-    "name": "resolve-app",
+    "name": "Resolve Cliente",
     "slug": "resolve-app",
-    "version": "1.0.0",
+    "version": "3.0.1",
     "scheme": "resolve",
     "icon": "./assets/images/icon.png",
     "android": {
       "newArchEnabled": true
     },
     "ios": {
+      "buildNumber": "2",
+      "bundleIdentifier": "com.developers.resolveapp",
+      "supportsTablet": true,
+      "newArchEnabled": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
         "CFBundleLocalizations": ["pt"],
         "CFBundleIconName": "AppIcon"
-
-      },
-      "supportsTablet": true,
-      "bundleIdentifier": "com.onesignal.example",
-
-      "newArchEnabled": true
+      }
     },
     "plugins": [
       "expo-video",

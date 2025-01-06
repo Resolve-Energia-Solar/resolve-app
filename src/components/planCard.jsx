@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../theme/colors";
 
 export default function PlanCard() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,7 +23,7 @@ export default function PlanCard() {
 
   const navigation = useNavigation();
   const handleNavigate = () => {
-    navigation.navigate("Payments");
+    navigation.navigate("Product");
   };
 
   return (
@@ -56,7 +57,11 @@ export default function PlanCard() {
             "Um serviço de limpeza das placas solares",
           ].map((item, index) => (
             <View key={index} style={styles.featureItem}>
-              <MaterialIcons name="check-circle" size={20} color="#FFD700" />
+              <MaterialIcons
+                name="check-circle"
+                size={20}
+                color={colors.yellowDark}
+              />
               <Text style={styles.featureText}>{item}</Text>
               <TouchableOpacity onPress={() => handleInfoPress(item)}>
                 <MaterialIcons
@@ -81,7 +86,7 @@ export default function PlanCard() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
+        <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Mais informações</Text>
             <Text style={styles.modalText}>{modalText}</Text>
@@ -165,7 +170,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   buyButton: {
-    backgroundColor: "#FFD700",
+    backgroundColor: colors.yellowDark,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: "center",
@@ -180,6 +185,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
     width: 300,
@@ -201,7 +212,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalButton: {
-    backgroundColor: "#FFD700",
+    backgroundColor: colors.yellowDark,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,
