@@ -20,7 +20,8 @@ import contractService from "../../services/contractService";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
-
+import { colors } from "../../theme/colors";
+import { MaterialIcons } from "@expo/vector-icons";
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { setUserInfo, setContractData } = useGlobalContext();
@@ -92,8 +93,6 @@ export default function LoginScreen() {
         setUserInfo
       );
 
-      setIsLoading(false);
-
       if (success) {
         if (saveLogin) {
           await saveData();
@@ -112,10 +111,18 @@ export default function LoginScreen() {
           );
           console.log("Dados do contrato:", contractData);
 
-          const preSaleContract = contractData.results.find(
-            (contract) =>
-              contract.is_pre_sale === true && contract.signature_date === null
-          );
+          const preSaleContract = contractData.results.find((contract) => {
+            if (
+              contract.is_pre_sale === true &&
+              contract.signature_date === null &&
+              (contract.contract_submission === null ||
+                Object.keys(contract.contract_submission).length === 0)
+            ) {
+              console.log("Contrato de pré-venda encontrado:", contract);
+              return true;
+            }
+            return false;
+          });
 
           if (preSaleContract) {
             console.log("Contrato de pré-venda encontrado:", preSaleContract);
@@ -138,10 +145,11 @@ export default function LoginScreen() {
         setShowAlert(true);
       }
     } catch (loginError) {
-      setIsLoading(false);
       setErrorMessage("Erro ao realizar login. Tente novamente.");
       setShowAlert(true);
       console.log("Erro ao tentar realizar login:", loginError);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -187,29 +195,30 @@ export default function LoginScreen() {
               <Checkbox
                 value={saveLogin}
                 onValueChange={setSaveLogin}
-                color={saveLogin ? "#FFB800" : undefined}
+                color={saveLogin ? colors.yellowDark : undefined}
               />
               <Text style={styles.checkboxLabel}>Lembrar dados do login</Text>
             </View>
 
             <Button
-              title={
-                isLoading ? (
-                  <ActivityIndicator
-                    size="small"
-                    color="#333"
-                    style={styles.loading}
-                  />
-                ) : (
-                  "Acessar"
-                )
-              }
+              title="Acessar"
               onPress={handleAccess}
               disabled={isLoading}
             />
           </View>
         </View>
       </TouchableWithoutFeedback>
+
+      <Modal visible={isLoading} transparent>
+        <View style={styles.loadingOverlay}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.yellowDark} />
+            <Text style={styles.loadingText}>
+              Espere um pouco... Já já estará tudo pronto para você! ;)
+            </Text>
+          </View>
+        </View>
+      </Modal>
 
       {showAlert && (
         <Modal
@@ -218,11 +227,18 @@ export default function LoginScreen() {
           visible={showAlert}
           onRequestClose={closeAlert}
         >
-          <View style={styles.overlay}>
+          <View style={styles.loadingOverlay}>
             <View style={styles.alertBox}>
+              <MaterialIcons
+                name="error-outline"
+                size={48}
+                color={colors.yellowDark}
+              />
+
               <Text style={styles.alertText}>{errorMessage}</Text>
+
               <TouchableOpacity style={styles.closeButton} onPress={closeAlert}>
-                <Text style={styles.closeButtonText}>Fechar</Text>
+                <Text style={styles.closeButtonText}>Voltar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -235,7 +251,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFB800",
+    backgroundColor: colors.yellowDark,
   },
   content: {
     flex: 1,
@@ -249,7 +265,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   card: {
-    backgroundColor: "#FFF",
+    backgroundColor: colors.white,
     borderRadius: 16,
     padding: 24,
     width: "100%",
@@ -258,15 +274,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 24,
-    color: "#000",
-  },
-  required: {
-    color: "#FF0000",
-    fontSize: 12,
-    marginBottom: 16,
-  },
-  loading: {
-    marginTop: 10,
+    color: colors.black,
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -278,47 +286,59 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  loadingOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  loadingContainer: {
+    backgroundColor: colors.white,
+    padding: 20,
+    borderRadius: 10,
+    width: "50%",
+    height: "20%",
+    alignItems: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+  },
   overlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   alertBox: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     padding: 24,
     borderRadius: 16,
     width: "85%",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    maxWidth: 400,
-    marginHorizontal: 20,
   },
-
   alertText: {
     fontSize: 18,
     color: "#333",
     textAlign: "center",
     marginBottom: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
   },
-
   closeButton: {
-    backgroundColor: "#FFB800",
+    backgroundColor: colors.yellowDark,
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 12,
     marginTop: 16,
-    alignItems: "center",
   },
-
   closeButtonText: {
-    color: "#FFF",
-    fontSize: 16,
+    color: colors.black,
+    fontSize: 15,
     fontWeight: "bold",
   },
 });

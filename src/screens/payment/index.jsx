@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.8)", // Fundo semi-transparente
-    zIndex: 10, // Para exibir acima do WebView
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    zIndex: 10,
   },
   loadingText: {
     marginTop: 10,

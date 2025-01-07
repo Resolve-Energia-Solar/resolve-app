@@ -70,11 +70,6 @@ const login = async (cpf, birthDate, setUserInfo) => {
     user = await loginCRM(formattedCpf, formattedBirthDate)
     if (user && user.access && user.refresh && user.id) {
       crmLoginSuccess = true
-
-      await AsyncStorage.setItem('accessToken', user.access)
-      await AsyncStorage.setItem('refreshToken', user.refresh)
-      await AsyncStorage.setItem('userId', user.id.toString())
-
       setUserInfo(user)
     }
   } catch (error) {
@@ -105,9 +100,26 @@ const login = async (cpf, birthDate, setUserInfo) => {
     }
   }
 
-  return { success: false, error: 'Falha no login em ambas as APIs.' }
+  return { success: false, error: 'Falha no login' }
+}
+
+const logout = async setUserInfo => {
+  try {
+    await AsyncStorage.removeItem('accessTokenClient')
+    await AsyncStorage.removeItem('refreshTokenClient')
+    await AsyncStorage.removeItem('userIdClient')
+    await AsyncStorage.removeItem('userId')
+    await AsyncStorage.removeItem('accessToken')
+    await AsyncStorage.removeItem('refreshToken')
+    setUserInfo(null)
+
+    console.log('Logout realizado com sucesso')
+  } catch (error) {
+    console.log('Erro ao realizar logout:', error.message)
+  }
 }
 
 export default {
+  logout,
   login
 }

@@ -13,8 +13,8 @@ import { BottomNav } from "../../components/bottomNav";
 import Header from "../../components/header";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalContext } from "../../contexts/GlobalContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "../../theme/colors";
+import { logout } from "../../services/authService";
 
 export default function ProfileScreen() {
   const { contract, resetUser } = useGlobalContext();
@@ -27,12 +27,12 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("userId");
+      await logout;
       resetUser();
       console.log("Logout realizado com sucesso.");
       navigation.navigate("Login");
     } catch (error) {
-      console.log("Erro ao realizar logout:", error);
+      console.log("Erro ao realizar logout:", error.message);
     }
   };
 
