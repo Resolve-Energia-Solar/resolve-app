@@ -70,6 +70,11 @@ const login = async (cpf, birthDate, setUserInfo) => {
     user = await loginCRM(formattedCpf, formattedBirthDate)
     if (user && user.access && user.refresh && user.id) {
       crmLoginSuccess = true
+
+      await AsyncStorage.setItem('accessToken', user.access)
+      await AsyncStorage.setItem('refreshToken', user.refresh)
+      await AsyncStorage.setItem('userId', user.id.toString())
+      
       setUserInfo(user)
     }
   } catch (error) {

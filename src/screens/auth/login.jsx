@@ -101,9 +101,12 @@ export default function LoginScreen() {
         console.log("Login bem-sucedido!", user);
 
         try {
-          console.log("Buscando dados do contrato...", user.id);
+          console.log("Buscando dados do contrato... userId:", user.id);
           const userIdClient = await AsyncStorage.getItem("userIdClient");
-          console.log("userIdClient:", userIdClient);
+          console.log(
+            "Buscando dados do contrato... userIdClient:",
+            userIdClient
+          );
 
           const contractData = await contractService.getContractData(
             user.id,
