@@ -32,21 +32,7 @@ export default function SellerInfo({ seller }) {
             <Text style={styles.role}>Consultor de Vendas</Text>
           </View>
         </View>
-        {/* Exemplo de como adicionar outras informações */}
-        {email && <InfoItem label="Email" value={email} />}
-        {phone_numbers && phone_numbers.length > 0 && (
-          <InfoItem label="Telefone" value={phone_numbers[0]} />
-        )}
       </View>
-    </View>
-  );
-}
-
-function InfoItem({ label, value }) {
-  return (
-    <View style={styles.infoItem}>
-      <Text style={styles.label}>{label}:</Text>
-      <Text style={styles.value}>{value}</Text>
     </View>
   );
 }
