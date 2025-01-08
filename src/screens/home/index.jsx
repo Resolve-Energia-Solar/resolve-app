@@ -26,9 +26,11 @@ export default function Home() {
 
   const handleNavigate = async () => {
     try {
-      const hasVisited = await AsyncStorage.getItem("hasVisitedTrack");
+      const hasVisited =
+        JSON.parse(await AsyncStorage.getItem("hasVisitedTrack")) || false;
+        console.log("hasVisited", hasVisited);
       if (!hasVisited) {
-        await AsyncStorage.setItem("hasVisitedTrack", "true");
+        await AsyncStorage.setItem("hasVisitedTrack", JSON.stringify(true));
         navigation.navigate("Accommodation");
       } else {
         navigation.navigate("ContractTracking");
@@ -37,6 +39,7 @@ export default function Home() {
       console.error("Erro ao acessar o AsyncStorage:", error);
     }
   };
+
   return (
     <View style={styles.container}>
       <Header name={name} />

@@ -102,7 +102,9 @@ export const ContractTrackingScreen = () => {
         saleContract?.contract_date ||
         "Data não definida",
       completed:
-        contractData?.is_signed || saleContract?.documents?.is_completed || false,
+        contractData?.is_signed ||
+        saleContract?.documents?.is_completed ||
+        false,
       actionText: contractData?.attachment_count
         ? `${contractData.attachment_count} Arquivo(s) em Anexo`
         : "Nenhum arquivo em anexo",
@@ -114,8 +116,8 @@ export const ContractTrackingScreen = () => {
     {
       title: "Acolhimento",
       date:
-        saleContract?.customer_service_acceptance_records?.acceptance_date_time ||
-        "Data não definida",
+        saleContract?.customer_service_acceptance_records
+          ?.acceptance_date_time || "Data não definida",
       completed:
         saleContract?.customer_service_acceptance_records?.is_completed || true,
       actionText: "Replay no Vídeo de primeiros passos",
@@ -161,7 +163,7 @@ export const ContractTrackingScreen = () => {
       date:
         contractData?.kits_delivery_date ||
         saleContract?.deliveries?.delivery_date ||
-        "Previsto para 15/11/2024",
+        "Data não definida",
       completed: saleContract?.deliveries?.is_completed || false,
     },
     {
@@ -169,7 +171,7 @@ export const ContractTrackingScreen = () => {
       date:
         contractData?.installation_date ||
         saleContract?.installations?.start_date ||
-        "Previsto para 20/11/2024",
+        "Data não definida",
       completed: saleContract?.installations?.is_completed_technical || false,
     },
     {
@@ -177,7 +179,7 @@ export const ContractTrackingScreen = () => {
       date:
         contractData?.homologation_date ||
         saleContract?.concessionaire_inspection_requests?.request_date ||
-        "Previsto para 25/12/2024",
+        "Data não definida",
       completed:
         saleContract?.concessionaire_inspection_requests?.is_completed || false,
     },

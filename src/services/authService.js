@@ -74,7 +74,7 @@ const login = async (cpf, birthDate, setUserInfo) => {
       await AsyncStorage.setItem('accessToken', user.access)
       await AsyncStorage.setItem('refreshToken', user.refresh)
       await AsyncStorage.setItem('userId', user.id.toString())
-      
+
       setUserInfo(user)
     }
   } catch (error) {
@@ -116,6 +116,7 @@ const logout = async setUserInfo => {
     await AsyncStorage.removeItem('userId')
     await AsyncStorage.removeItem('accessToken')
     await AsyncStorage.removeItem('refreshToken')
+    await AsyncStorage.setItem("hasVisitedTrack", JSON.stringify(false))
     setUserInfo(null)
 
     console.log('Logout realizado com sucesso')

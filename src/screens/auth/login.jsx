@@ -116,7 +116,6 @@ export default function LoginScreen() {
 
           const preSaleContract = contractData.results.find((contract) => {
             if (
-              contract.is_pre_sale === true &&
               contract.signature_date === null &&
               (contract.contract_submission === null ||
                 Object.keys(contract.contract_submission).length === 0)
