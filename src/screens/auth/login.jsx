@@ -77,84 +77,76 @@ export default function LoginScreen() {
 
   const handleAccess = async () => {
     dismissKeyboard();
-
+  
     if (!cpf || !birthDate) {
       setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
       setShowAlert(true);
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
-      const { success, user, error } = await loginService.login(
-        cpf,
-        birthDate,
-        setUserInfo
-      );
-
+      const { success, user, errors } = await loginService.login(cpf, birthDate, setUserInfo);
+  
       if (success) {
         if (saveLogin) {
           await saveData();
         }
-
+  
         console.log("Login bem-sucedido!", user);
-
+  
         try {
           console.log("Buscando dados do contrato... userId:", user.id);
           const userIdClient = await AsyncStorage.getItem("userIdClient");
-          console.log(
-            "Buscando dados do contrato... userIdClient:",
-            userIdClient
-          );
-
-          const contractData = await contractService.getContractData(
-            user.id,
-            userIdClient
-          );
+          console.log("Buscando dados do contrato... userIdClient:", userIdClient);
+  
+          const contractData = await contractService.getContractData(user.id, userIdClient);
           console.log("Dados do contrato:", contractData);
-
-          const preSaleContract = contractData.results.find((contract) => {
-            if (
-              contract.signature_date === null &&
-              (contract.contract_submission === null ||
-                Object.keys(contract.contract_submission).length === 0)
-            ) {
-              console.log("Contrato de pré-venda encontrado:", contract);
-              return true;
-            }
-            return false;
-          });
-
+  
+          const preSaleContract = contractData.results.find(contract =>
+            !contract.signature_date &&
+            (!contract.contract_submission || Object.keys(contract.contract_submission).length === 0)
+          );
+  
           if (preSaleContract) {
             console.log("Contrato de pré-venda encontrado:", preSaleContract);
             navigation.navigate("Pre-sale");
           } else {
-            console.log(
-              "Contrato de pré-venda não encontrado, redirecionando para a home."
-            );
+            console.log("Contrato de pré-venda não encontrado, redirecionando para a home.");
             navigation.navigate("Home");
           }
-
+  
           setContractData(contractData);
         } catch (contractError) {
-          setErrorMessage("Erro ao obter dados do contrato.");
+          const errorDetails = contractError.response
+            ? `${contractError.response.status}: ${contractError.response.statusText}`
+            : contractError.message;
+  
+          setErrorMessage(`Erro ao obter dados do contrato: ${errorDetails}`);
           setShowAlert(true);
-          console.log("Erro ao buscar contrato:", contractError);
+          console.error("Erro ao buscar contrato:", errorDetails);
         }
       } else {
-        setErrorMessage(error || "Erro desconhecido.");
+        const errorMessage = errors.length
+          ? `Erros encontrados:\n${errors.join("\n")}`
+          : "Erro desconhecido.";
+        setErrorMessage(errorMessage);
         setShowAlert(true);
       }
     } catch (loginError) {
-      setErrorMessage("Erro ao realizar login. Tente novamente.");
+      const errorDetails = loginError.response
+        ? `${loginError.response.status}: ${loginError.response.statusText}`
+        : loginError.message;
+  
+      setErrorMessage(`Erro ao realizar login: ${errorDetails}`);
       setShowAlert(true);
-      console.log("Erro ao tentar realizar login:", loginError);
+      console.error("Erro ao tentar realizar login:", errorDetails);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   const closeAlert = () => {
     setShowAlert(false);
   };
