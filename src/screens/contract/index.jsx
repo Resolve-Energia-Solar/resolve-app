@@ -41,37 +41,51 @@ function ContractScreen() {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Simple widget usage</title>
-        <script src="https://cdn-public-library.clicksign.com/embedded/embedded.min-1.0.0.js" type="text/javascript"></script>
+        <title>Simple Widget Usage</title>
+        <script src="https://cdn-public-library.clicksign.com/embedded/embedded.min-2.0.0.js"></script>
         <style>
           #container iframe {
             border: none !important;
+            width: 100%;
           }
         </style>
       </head>
       <body>
         <div id="container" style="height: 650px"></div>
         <script type="text/javascript">
-          var widget;
-          var request_signature_key = '${requestSignatureKey}';
-          
-          widget = new Clicksign(request_signature_key);
-          widget.endpoint = 'https://app.clicksign.com';
-          widget.origin = '*';
-          widget.mount('container');
-          
-          widget.on('loaded', function(ev) { console.log('loaded!'); });
-          widget.on('signed', function(ev) { 
-            console.log('signed!'); 
-            window.ReactNativeWebView.postMessage(JSON.stringify({ event: 'signed' }));
-          });
-          widget.on('resized', function(height) {
-            document.getElementById('container').style.height = height + 'px';
-          });
+          (function() {
+            var widget;
+            var request_signature_id = '${requestSignatureKey}';
+            
+            widget = new Clicksign(request_signature_id);
+            widget.endpoint = 'https://app.clicksign.com';
+            widget.origin = window.origin;
+
+            widget.mount('container');
+
+            // Eventos do widget
+            widget.on('loaded', function(event) {
+              console.log('Widget carregado com sucesso!');
+            });
+
+            widget.on('signed', function(event) {
+              console.log('Documento assinado com sucesso!');
+              if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(
+                  JSON.stringify({ event: 'signed' })
+                );
+              }
+            });
+
+            widget.on('resized', function(height) {
+              document.getElementById('container').style.height = height + 'px';
+            });
+          })();
         </script>
       </body>
     </html>
   `;
+
 
   return (
     <View style={styles.container}>

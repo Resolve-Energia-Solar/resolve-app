@@ -136,8 +136,8 @@ export const ContractTrackingScreen = () => {
       status: fieldService?.status || "Status não definido",
       completed: fieldService?.is_completed || true,
       agent:
-        fieldService?.schedule_agent.complete_name || "Agente não definido",
-      agentPicture: fieldService?.schedule_agent.profile_picture || null,
+        fieldService?.schedule_agent?.complete_name || "Agente não definido",
+      agentPicture: fieldService?.schedule_agent?.profile_picture || null,
     },
     {
       title: "Projeto de Engenharia",

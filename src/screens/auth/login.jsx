@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import { colors } from "../../theme/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { setUserInfo, setContractData } = useGlobalContext();
@@ -29,7 +30,7 @@ export default function LoginScreen() {
   const [cpf, setCpf] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [saveLogin, setSaveLogin] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,100 +54,110 @@ export default function LoginScreen() {
     loadSavedData();
   }, []);
 
-  const saveData = async () => {
-    if (saveLogin) {
-      try {
-        await AsyncStorage.setItem("savedCpf", cpf);
-        await AsyncStorage.setItem("savedBirthDate", birthDate);
-        await AsyncStorage.setItem("saveLogin", "true");
-        console.log("Dados salvos com sucesso.");
-      } catch (error) {
-        console.log("Erro ao salvar dados no AsyncStorage:", error);
-      }
-    } else {
-      try {
-        await AsyncStorage.removeItem("savedCpf");
-        await AsyncStorage.removeItem("savedBirthDate");
-        await AsyncStorage.removeItem("saveLogin");
-        console.log("Dados removidos com sucesso.");
-      } catch (error) {
-        console.log("Erro ao remover dados do AsyncStorage:", error);
-      }
+  const saveLoginData = async () => {
+    try {
+      await AsyncStorage.multiSet([
+        ["savedCpf", cpf],
+        ["savedBirthDate", birthDate],
+        ["saveLogin", "true"],
+      ]);
+      console.log("Dados salvos com sucesso.");
+    } catch (error) {
+      console.log("Erro ao salvar dados no AsyncStorage:", error);
+    }
+  };
+
+  const removeLoginData = async () => {
+    try {
+      await AsyncStorage.multiRemove([
+        "savedCpf",
+        "savedBirthDate",
+        "saveLogin",
+      ]);
+      console.log("Dados removidos com sucesso.");
+    } catch (error) {
+      console.log("Erro ao remover dados do AsyncStorage:", error);
     }
   };
 
   const handleAccess = async () => {
     dismissKeyboard();
-  
+
     if (!cpf || !birthDate) {
-      setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
+      setErrorMessage(["Por favor, preencha todos os campos obrigatórios."]);
       setShowAlert(true);
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
-      const { success, user, errors } = await loginService.login(cpf, birthDate, setUserInfo);
-  
+      const { success, user, errors } = await loginService.login(
+        cpf,
+        birthDate,
+        setUserInfo
+      );
+
       if (success) {
         if (saveLogin) {
-          await saveData();
+          await saveLoginData();
+        } else {
+          await removeLoginData();
         }
-  
+
         console.log("Login bem-sucedido!", user);
-  
+
         try {
           console.log("Buscando dados do contrato... userId:", user.id);
           const userIdClient = await AsyncStorage.getItem("userIdClient");
-          console.log("Buscando dados do contrato... userIdClient:", userIdClient);
-  
-          const contractData = await contractService.getContractData(user.id, userIdClient);
-          console.log("Dados do contrato:", contractData);
-  
-          const preSaleContract = contractData.results.find(contract =>
-            !contract.signature_date &&
-            (!contract.contract_submission || Object.keys(contract.contract_submission).length === 0)
+          console.log(
+            "Buscando dados do contrato... userIdClient:",
+            userIdClient
           );
-  
+
+          const contractData = await contractService.getContractData(
+            user.id,
+            userIdClient
+          );
+          console.log("Dados do contrato:", contractData);
+
+          const preSaleContract = contractData.results.find(
+            (contract) => !contract.signature_date
+          );
+          
+
           if (preSaleContract) {
             console.log("Contrato de pré-venda encontrado:", preSaleContract);
             navigation.navigate("Pre-sale");
           } else {
-            console.log("Contrato de pré-venda não encontrado, redirecionando para a home.");
+            console.log(
+              "Contrato de pré-venda não encontrado, redirecionando para a home."
+            );
             navigation.navigate("Home");
           }
-  
+
           setContractData(contractData);
         } catch (contractError) {
-          const errorDetails = contractError.response
-            ? `${contractError.response.status}: ${contractError.response.statusText}`
-            : contractError.message;
-  
-          setErrorMessage(`Erro ao obter dados do contrato: ${errorDetails}`);
+          const errorDetails =
+            contractError.message || "Erro ao buscar dados do contrato.";
+
+          setErrorMessage([`Erro ao obter dados do contrato: ${errorDetails}`]);
           setShowAlert(true);
           console.error("Erro ao buscar contrato:", errorDetails);
         }
       } else {
-        const errorMessage = errors.length
-          ? `Erros encontrados:\n${errors.join("\n")}`
-          : "Erro desconhecido.";
-        setErrorMessage(errorMessage);
+        setErrorMessage(errors);
         setShowAlert(true);
       }
     } catch (loginError) {
-      const errorDetails = loginError.response
-        ? `${loginError.response.status}: ${loginError.response.statusText}`
-        : loginError.message;
-  
-      setErrorMessage(`Erro ao realizar login: ${errorDetails}`);
+      setErrorMessage([`Erro ao realizar login: ${loginError.message}`]);
       setShowAlert(true);
-      console.error("Erro ao tentar realizar login:", errorDetails);
+      console.error("Erro ao tentar realizar login:", loginError.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const closeAlert = () => {
     setShowAlert(false);
   };
@@ -203,6 +214,7 @@ export default function LoginScreen() {
         </View>
       </TouchableWithoutFeedback>
 
+      {/* Modal de carregamento */}
       <Modal visible={isLoading} transparent>
         <View style={styles.loadingOverlay}>
           <View style={styles.loadingContainer}>
@@ -214,6 +226,7 @@ export default function LoginScreen() {
         </View>
       </Modal>
 
+      {/* Modal de alerta de erro */}
       {showAlert && (
         <Modal
           transparent={true}
@@ -229,7 +242,11 @@ export default function LoginScreen() {
                 color={colors.yellowDark}
               />
 
-              <Text style={styles.alertText}>{errorMessage}</Text>
+              {errorMessage.map((msg, index) => (
+                <Text key={index} style={styles.alertText}>
+                  {msg}
+                </Text>
+              ))}
 
               <TouchableOpacity style={styles.closeButton} onPress={closeAlert}>
                 <Text style={styles.closeButtonText}>Voltar</Text>
@@ -241,7 +258,6 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
