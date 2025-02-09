@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import contractService from '../services/contractService'
 
 const GlobalContext = createContext()
 
@@ -10,6 +11,9 @@ const GlobalProvider = ({ children }) => {
   const [contract, setContract] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  console.log('contract: ', contract)
+
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -17,6 +21,7 @@ const GlobalProvider = ({ children }) => {
         const userIdClient = await AsyncStorage.getItem('userIdClient')
         const userSettings = await AsyncStorage.getItem('settings')
         const userContract = await AsyncStorage.getItem('contract')
+
 
         if (userId) {
           setUser({ id: userId })
@@ -33,6 +38,7 @@ const GlobalProvider = ({ children }) => {
         if (userContract) {
           setContract(JSON.parse(userContract))
         }
+
       } catch (error) {
         console.log('Erro ao carregar dados: ', error)
       } finally {
@@ -63,6 +69,21 @@ const GlobalProvider = ({ children }) => {
     await AsyncStorage.setItem('contract', JSON.stringify(contractData))
   }
 
+  const isSigned = async () => {
+    try {
+      const contractData = await contractService.getContractData(user.id, userIdClient);
+      const firstResult = Array.isArray(contractData?.results) ? contractData.results[0] : null;
+  
+      console.log('contractData 2 -> isSigned: ', firstResult);
+      
+      return !!firstResult?.signature_date; 
+    } catch (error) {
+      console.error('Erro ao verificar assinatura do contrato: ', error);
+      return false;
+    }
+  };
+  
+
   const resetUser = async () => {
     setUser(null)
     setUserIdClient(null)
@@ -78,6 +99,7 @@ const GlobalProvider = ({ children }) => {
         settings,
         contract,
         loading,
+        isSigned,
         setUserInfo,
         setUserClientInfo,
         setAppSettings,
