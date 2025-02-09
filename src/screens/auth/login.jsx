@@ -121,10 +121,8 @@ export default function LoginScreen() {
           );
           console.log("Dados do contrato:", contractData);
 
-          const preSaleContract = contractData.results.find(
-            (contract) => !contract.signature_date
-          );
-          
+          const preSaleContract = contractData?.results[0]?.signature_date ? false : true;
+
 
           if (preSaleContract) {
             console.log("Contrato de pré-venda encontrado:", preSaleContract);
