@@ -95,7 +95,7 @@ const getContractData = async (userId = null, userIdClient = null) => {
       console.log('Nenhum dado de vendas encontrado.')
     }
 
-    console.log('customer', customerDetails)
+    console.log('results: ', results)
 
     return { results: [], customerDetails }
   } catch (error) {
@@ -104,6 +104,58 @@ const getContractData = async (userId = null, userIdClient = null) => {
   }
 }
 
+
+const previewContract = async (saleId) => {
+  console.log('Iniciando a busca de dados do contrato...');
+
+  try {
+    const accessTokenCRM = await AsyncStorage.getItem('accessToken');
+    if (!accessTokenCRM) {
+      throw new Error('Token de acesso CRM não encontrado. Por favor, faça login.');
+    }
+
+    const response = await fetch(
+      `https://api.resolvenergiasolar.com/api/generate-contract/?preview=true`,
+      {
+        method: 'POST', // Método POST para enviar o sale_id no body
+        headers: {
+          Authorization: `Bearer ${accessTokenCRM}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sale_id: saleId }), // Envia o sale_id no body
+      }
+    );
+
+    console.log('Resposta da requisição de contrato: ', response);
+
+    if (response.ok) {
+      // Converte a resposta para um Blob (arquivo binário)
+      const blob = await response.blob();
+
+      // Converte o Blob para Base64
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          // Remove o prefixo "data:application/pdf;base64," da string Base64
+          const base64Data = reader.result.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob); // Converte o Blob para Base64
+      });
+
+      return base64; // Retorna o PDF em Base64
+    } 
+    return null;
+  } catch (error) {
+    console.error('Erro ao buscar dados do contrato:', error.message);
+    throw error;
+  }
+};
+
+
+
 export default {
-  getContractData
+  getContractData,
+  previewContract
 }

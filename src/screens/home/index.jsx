@@ -8,9 +8,12 @@ import { FloatingButtons } from "../../components/floatingButtons";
 import { useNavigation } from "@react-navigation/native";
 import PlanCard from "../../components/planCard";
 import { colors } from "../../theme/colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const { contract } = useGlobalContext();
+  const navigation = useNavigation();
+
   console.log("contract home", contract);
   const name =
     contract?.customerDetails?.name ||
@@ -20,10 +23,23 @@ export default function Home() {
     contract?.results?.[0]?.contract_number ||
     contract?.customerDetails?.sales?.[0]?.contract_number ||
     "Número do contrato não disponível";
-  const navigation = useNavigation();
-  const handleNavigate = () => {
-    navigation.navigate("ContractTracking");
+
+  const handleNavigate = async () => {
+    try {
+      const hasVisited =
+        JSON.parse(await AsyncStorage.getItem("hasVisitedTrack")) || false;
+        console.log("hasVisited", hasVisited);
+      if (!hasVisited) {
+        await AsyncStorage.setItem("hasVisitedTrack", JSON.stringify(true));
+        navigation.navigate("Accommodation");
+      } else {
+        navigation.navigate("ContractTracking");
+      }
+    } catch (error) {
+      console.error("Erro ao acessar o AsyncStorage:", error);
+    }
   };
+
   return (
     <View style={styles.container}>
       <Header name={name} />

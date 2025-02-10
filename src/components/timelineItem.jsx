@@ -10,6 +10,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "../theme/colors";
+import { formatDate } from "../utils/Formatdata";
 
 export const TimelineItem = ({ item }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,7 +59,7 @@ export const TimelineItem = ({ item }) => {
             </TouchableOpacity>
           )}
         </View>
-        <Text style={styles.date}>{item.date || "Sem data"}</Text>
+        <Text style={styles.date}>{formatDate(item.date) || "Sem data"}</Text>
         <Text style={styles.description}>
           {item.description || "Sem descrição"}
         </Text>

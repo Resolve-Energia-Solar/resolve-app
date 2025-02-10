@@ -6,6 +6,9 @@ import {
   View,
   StyleSheet,
   Platform,
+  Linking,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import Checkbox from "expo-checkbox";
@@ -13,13 +16,17 @@ import { useGlobalContext } from "../../contexts/GlobalContext";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "../../../src/theme/colors";
 import StatusBarComponent from "../../components/statusBar";
+import contractService from "../../services/contractService";
 
 function ContractScreen() {
   const navigation = useNavigation();
-  const { contract } = useGlobalContext();
+  const { contract, isSigned: isSignedCustomer } = useGlobalContext();
   const [isSigned, setIsSigned] = useState(false);
   const [signLater, setSignLater] = useState(false);
-  console.log("contrato", contract?.results[0]?.contract_submission);
+  const [preview, setPreview] = useState(null);
+  const [isSigning, setIsSigning] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
+
   const requestSignatureKey =
     contract?.results[0]?.contract_submission?.request_signature_key;
 
@@ -29,49 +36,128 @@ function ContractScreen() {
     }
   }, [requestSignatureKey, navigation]);
 
-  const handleAdvance = () => {
-    if (isSigned || signLater) {
-      navigation.navigate("Completion");
+  const handleSign = async () => {
+    setIsSigning(true);
+    try {
+      if (requestSignatureKey) {
+        const contractUrl = `https://app.clicksign.com/notarial/widget/signatures/${requestSignatureKey}/redirect`;
+        const canOpen = await Linking.canOpenURL(contractUrl);
+        if (canOpen) {
+          await Linking.openURL(contractUrl);
+          setIsSigned(true);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao redirecionar para assinatura:", error);
+      Alert.alert("Erro", "Não foi possível abrir o link de assinatura.");
+    } finally {
+      setIsSigning(false);
+    }
+  };
+
+  const handleAdvance = async () => {
+    setIsAdvancing(true);
+    setIsSigned(true);
+
+    try {
+      if (signLater) {
+        navigation.navigate("Completion");
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 25000));
+
+      const isSignedCheck = await isSignedCustomer();
+
+      if (isSignedCheck) {
+        navigation.navigate("Completion");
+        return;
+      }
+
+      setIsSigned(false);
+      Alert.alert(
+        "Atenção",
+        "Não encontramos a confirmação da assinatura do contrato em nosso sistema, possivelmente devido a um atraso na atualização. Se você já assinou, pode ignorar este aviso e avançar para a próxima etapa. Caso prefira uma confirmação adicional, tente novamente abaixo.",
+        [
+          {
+            text: "Tentar Novamente",
+            onPress: handleAdvance,
+          },
+          {
+            text: "Avançar Mesmo Assim",
+            onPress: () => {
+              navigation.navigate("Completion");
+            },
+          },
+          {
+            text: "Fechar",
+            style: "cancel", // Define o estilo do botão como "cancel" (opcional)
+          },
+        ]
+
+      );
+    } catch (error) {
+      console.error("Erro ao avançar:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao tentar avançar.");
+    } finally {
+      setIsAdvancing(false);
     }
   };
 
   const htmlContent = `
-    <!DOCTYPE html>
     <html>
       <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Simple widget usage</title>
-        <script src="https://cdn-public-library.clicksign.com/embedded/embedded.min-1.0.0.js" type="text/javascript"></script>
-        <style>
-          #container iframe {
-            border: none !important;
-          }
-        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
       </head>
       <body>
-        <div id="container" style="height: 650px"></div>
-        <script type="text/javascript">
-          var widget;
-          var request_signature_key = '${requestSignatureKey}';
-          
-          widget = new Clicksign(request_signature_key);
-          widget.endpoint = 'https://app.clicksign.com';
-          widget.origin = '*';
-          widget.mount('container');
-          
-          widget.on('loaded', function(ev) { console.log('loaded!'); });
-          widget.on('signed', function(ev) { 
-            console.log('signed!'); 
-            window.ReactNativeWebView.postMessage(JSON.stringify({ event: 'signed' }));
-          });
-          widget.on('resized', function(height) {
-            document.getElementById('container').style.height = height + 'px';
+        <div id="pdf-container"></div> 
+        <script>
+          const base64PDF = '${preview}';  // Agora o preview é diretamente a string Base64
+          const pdfData = atob(base64PDF); // Decodifica a string Base64 para binário
+
+          const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+          loadingTask.promise.then(function(pdf) {
+            const totalPages = pdf.numPages;
+            const container = document.getElementById('pdf-container');
+
+            for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+              pdf.getPage(pageNumber).then(function(page) {
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale: scale });
+
+                // Cria um novo canvas para cada página
+                const canvas = document.createElement('canvas');
+                container.appendChild(canvas);
+
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                  canvasContext: context,
+                  viewport: viewport
+                };
+
+                page.render(renderContext);
+              });
+            }
           });
         </script>
       </body>
     </html>
   `;
+
+  useEffect(() => {
+    const fetchPreview = async () => {
+      try {
+        const response = await contractService.previewContract(contract?.results[0]?.id);
+        setPreview(response);
+      } catch (error) {
+        console.warn("Erro ao buscar dados do contrato:", error.message);
+      }
+    };
+
+    fetchPreview();
+  }, [contract]);
 
   return (
     <View style={styles.container}>
@@ -105,6 +191,19 @@ function ContractScreen() {
             <Text style={styles.checkboxLabel}>Desejo assinar depois</Text>
           </View>
           <View style={styles.buttonRow}>
+            {!isSigned && !signLater && (
+              <TouchableOpacity
+                style={[styles.button, styles.advanceButton]}
+                onPress={handleSign}
+                disabled={isSigning}
+              >
+                <View style={styles.buttonContent}>
+                  <Text style={styles.buttonText}>Assinar</Text>
+                  {isSigning && <ActivityIndicator color={colors.white} style={styles.loading} />}
+                </View>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity
               style={[
                 styles.button,
@@ -116,9 +215,12 @@ function ContractScreen() {
               ]}
               onPress={handleAdvance}
               activeOpacity={isSigned || signLater ? 0.8 : 1}
-              disabled={!isSigned && !signLater}
+              disabled={(!isSigned && !signLater) || isAdvancing}
             >
-              <Text style={styles.buttonText}>Avançar</Text>
+              <View style={styles.buttonContent}>
+                <Text style={styles.buttonText}>Avançar</Text>
+                {isAdvancing && <ActivityIndicator color={colors.white} style={styles.loading} />}
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -184,5 +286,12 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "600",
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  loading: {
+    marginLeft: 8,
   },
 });
