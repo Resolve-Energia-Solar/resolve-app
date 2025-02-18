@@ -28,7 +28,7 @@ export default function Home() {
     try {
       const hasVisited =
         JSON.parse(await AsyncStorage.getItem("hasVisitedTrack")) || false;
-        console.log("hasVisited", hasVisited);
+      console.log("hasVisited", hasVisited);
       if (!hasVisited) {
         await AsyncStorage.setItem("hasVisitedTrack", JSON.stringify(true));
         navigation.navigate("Accommodation");
@@ -52,7 +52,7 @@ export default function Home() {
           address=""
           handleNavigate={handleNavigate}
         />
-        <PlanCard />
+        {/* <PlanCard /> */}
       </ScrollView>
       <BottomNav />
       <FloatingButtons />
