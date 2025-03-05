@@ -2,11 +2,18 @@
   "expo": {
     "name": "Resolve Cliente",
     "slug": "resolve-app",
-    "version": "3.0.1",
+    "version": "3.0.9",
     "scheme": "resolve",
+    "owner": "bruna_c",
     "icon": "./assets/images/icon.png",
     "android": {
-      "newArchEnabled": true
+      "newArchEnabled": true,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "ios": {
       "buildNumber": "2",
@@ -15,7 +22,10 @@
       "newArchEnabled": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
-        "CFBundleLocalizations": ["pt"],
+        "CFBundleLocalizations": [
+          "pt",
+          "pt"
+        ],
         "CFBundleIconName": "AppIcon"
       }
     },
@@ -55,11 +65,6 @@
     "router": {
       "origin": "expo"
     },
-    "extra": {
-      "eas": {
-        "projectId": "fc1a3818-d9b6-457f-b88d-43bb99cd4d62"
-      }
-    },
     "build": {
       "development": {
         "developmentClient": true,
@@ -69,6 +74,32 @@
         "distribution": "internal"
       },
       "production": {}
+    },
+    "extra": {
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "OneSignalNotificationServiceExtension",
+                  "bundleIdentifier": "com.developers.resolveapp.OneSignalNotificationServiceExtension",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.developers.resolveapp.onesignal"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "83d6a376-57c1-40b9-9de7-3ff33c676afc"
+      }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/83d6a376-57c1-40b9-9de7-3ff33c676afc"
     }
   }
 }

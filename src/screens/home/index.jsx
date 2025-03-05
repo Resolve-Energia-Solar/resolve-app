@@ -52,7 +52,7 @@ export default function Home() {
           address=""
           handleNavigate={handleNavigate}
         />
-        <PlanCard />
+        {/*<PlanCard />*/}
       </ScrollView>
       <BottomNav />
       <FloatingButtons />
