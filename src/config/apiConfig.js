@@ -1,4 +1,4 @@
-const API_CLIENT_URL = 'https://client-app.resolvenergiasolar.com';
+const API_CLIENT_URL = 'https://api-mobile.resolvenergiasolar.com';
 const API_BASE_URL = 'https://api.resolvenergiasolar.com/api/mobile';
 
 export const apiConfig = {
