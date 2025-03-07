@@ -17,7 +17,7 @@ export default function SupportScreen() {
       <Header title="Suporte" />
       <ScrollView style={styles.content}>
         <UnitInfo unit={unit} />
-        <SellerInfo seller={seller} />
+       {/*<SellerInfo seller={seller}/>*/} 
       </ScrollView>
       <FloatingButtons />
       <BottomNav />
