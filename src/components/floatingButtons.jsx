@@ -7,7 +7,10 @@ import { colors } from "../theme/colors";
 export const FloatingButtons = () => {
   const openWhatsApp = async () => {
     const phoneNumber = "559140048688";
-    const whatsappAppUrl = `whatsapp://send?phone=${phoneNumber}`;
+    const whatsappAppUrl = Platform.select({
+      ios: `https://wa.me/${phoneNumber}`,
+      android: `whatsapp://send?phone=${phoneNumber}`,
+    });
     const whatsappWebUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}`;
 
     try {
