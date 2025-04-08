@@ -27,7 +27,7 @@ const getContractData = async (userId = null, userIdClient = null) => {
     let customerDetails = null
 
     try {
-      if (userId) {
+      if (userId) {     
         const salesResponse = await fetch(
           `${apiConfig.crm.mobileSalesUrl}?customer=${userId}`,
           {
